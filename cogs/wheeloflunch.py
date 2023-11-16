@@ -22,9 +22,10 @@ class WheelOfLunch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
-    def google_maps_link(self, address):
+    def google_maps_link(self, business_name, address):
         # Create the Google Maps URL
-        maps_url = f"https://maps.google.com/?q={quote(address[0])}"
+        query_string = business_name + " " + address
+        maps_url = f"https://maps.google.com/?q={quote(query_string)}"
 
         return maps_url
     
@@ -55,12 +56,16 @@ class WheelOfLunch(commands.Cog):
     @nextcord.slash_command(name="wheeloflunch")
     async def wheel_of_lunch(self, ctx, zipcode: str):
         business = self.random_business(zipcode)
-        maps_link = self.google_maps_link(business["location"]["display_address"])
         
-        message_string = business["name"] + "\n"
-        message_string += "Categories: " + ', '.join(self.categories(business)) + "\n"
-        message_string += "Rating: " + str(business["rating"]) + "/5 - " + str(business["review_count"]) + " reviews.\n"
-        message_string += maps_link + "\n"
+        business_name = business["name"] + "\n"
+        business_categories = "Categories: " + ', '.join(self.categories(business)) + "\n"
+        business_rating = "Rating: " + str(business["rating"]) + "/5 - " + str(business["review_count"]) + " reviews.\n"
+        maps_link = self.google_maps_link(business["name"], business["location"]["display_address"][0]) + "\n"
+        
+        message_string = business_name
+        message_string += business_categories
+        message_string += business_rating
+        message_string += maps_link
         
         await ctx.send(message_string)
 
