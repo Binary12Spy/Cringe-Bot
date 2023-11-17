@@ -1,11 +1,11 @@
 import os
-import time
-import nextcord
 import random
-from datetime import datetime, timedelta
+import spotipy
+import nextcord
+from nextcord.ext import tasks, commands
+from datetime import datetime
 from dotenv import load_dotenv
 from nextcord.ext import commands
-import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
 slash_categories = {
@@ -17,11 +17,15 @@ category_aliases = {
 }
 
 class VibeOfTheDay(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        self.background_task.start()
     
     load_dotenv()
     SPOTIFY_APP_CLIENT_ID = os.environ.get("SPOTIFY_APP_CLIENT_ID")
     SPOTIFY_APP_CLIENT_SECRET = os.environ.get("SPOTIFY_APP_CLIENT_SECRET")
     SPOTIFY_VIBE_PLAYLIST_ID = os.environ.get("SPOTIFY_VIBE_PLAYLIST_ID")
+    VIBE_ANNOUNCEMENT_CHANNEL = os.environ.get("VIBE_ANNOUNCEMENT_CHANNEL")
     
     current_vibe_url = ""
     current_vibe_name = ""
@@ -49,32 +53,22 @@ class VibeOfTheDay(commands.Cog):
         message = f'Vibe of the day\n[{self.current_vibe_name}]({self.current_vibe_url}) by {self.current_vibe_artists}'
         return message
     
-    def background_task(self):
-        while True:
-            # Get the current time
-            now = datetime.datetime.now()
-            # Calculate the time until midnight
-            midnight = datetime.datetime(now.year, now.month, now.day) + datetime.timedelta(days=1, hours=6)
-            wait_time = (midnight - now).total_seconds()
+    def cog_unload(self):
+        self.background_task.cancel()
 
-            # Wait until midnight
-            print("Waiting for", wait_time, "seconds until midnight.")
-            time.sleep(wait_time)
-
-            # Execute the function
+    @tasks.loop(hours=1)
+    async def background_task(self):    
+        now = datetime.datetime.now()
+        if 20 <= now.hour < 21:
             self.get_a_vibe()
-
-            # Optional: sleep a little bit to prevent the function from executing twice around midnight
-            time.sleep(1)
+            channel = self.bot.get_channel(self.VIBE_ANNOUNCEMENT_CHANNEL)
+            channel.send(self.vibe_message())
         
     @nextcord.slash_command(name="vibeoftheday")
     async def vibe_of_the_day(self, ctx):
         await ctx.send(self.vibe_message())
-        
-    
 
 def setup(bot):
     cog = VibeOfTheDay(bot)
     cog.get_a_vibe()
     bot.add_cog(cog)
-    
