@@ -16,8 +16,10 @@ async def on_ready():
     print("Bot logged in")
 
 for file in os.listdir("./cogs"):
-    if file.endswith(".py"):
+    try:
         bot.load_extension(f"cogs.{file[:-3]}")
+    except Exception as e:
+        print(f"Failed to load cog {file}: {e}")
         
 @bot.command()
 async def load(ctx, extension):
