@@ -10,14 +10,6 @@ from dotenv import load_dotenv
 from nextcord.ext import commands
 from spotipy.oauth2 import SpotifyClientCredentials
 
-slash_categories = {
-    ...
-}
-
-category_aliases = {
-    ...
-}
-
 class VibeOfTheDay(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -58,8 +50,8 @@ class VibeOfTheDay(commands.Cog):
     
     def vibe_message(self):
         message = dedent(f"""
-            ## Vibe of the day
-            {self.current_vibe_name} by {self.current_vibe_artists}
+            ### Vibe of the day:
+            *{self.current_vibe_name}* by *{self.current_vibe_artists}*
             [Spotify]({self.current_vibe_spot_url}) - [YT Music]({self.current_vibe_ytm_url})
             """)
         return message
@@ -73,11 +65,7 @@ class VibeOfTheDay(commands.Cog):
         if 6 <= now.hour < 7:
             self.get_a_vibe()
             channel = self.bot.get_channel(int(self.VIBE_ANNOUNCEMENT_CHANNEL))
-            await channel.send(self.vibe_message())
-        
-    @nextcord.slash_command(name="vibeoftheday")
-    async def vibe_of_the_day(self, ctx):
-        await ctx.send(self.vibe_message())
+            await channel.send(self.vibe_message(), suppress_embeds=True)
         
     @commands.Cog.listener()
     async def on_ready(self):
