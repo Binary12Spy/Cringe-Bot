@@ -2,6 +2,8 @@ import os
 import random
 import spotipy
 import nextcord
+import YouTubeMusicAPI
+from textwrap import dedent
 from nextcord.ext import tasks, commands
 from datetime import datetime
 from dotenv import load_dotenv
@@ -27,9 +29,10 @@ class VibeOfTheDay(commands.Cog):
     SPOTIFY_VIBE_PLAYLIST_ID = os.environ.get("SPOTIFY_VIBE_PLAYLIST_ID")
     VIBE_ANNOUNCEMENT_CHANNEL = os.environ.get("VIBE_ANNOUNCEMENT_CHANNEL")
     
-    current_vibe_url = ""
+    current_vibe_spot_url = ""
     current_vibe_name = ""
     current_vibe_artists = ""
+    current_vibe_ytm_url = ""
     
     sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=SPOTIFY_APP_CLIENT_ID, client_secret=SPOTIFY_APP_CLIENT_SECRET))
     
@@ -46,20 +49,29 @@ class VibeOfTheDay(commands.Cog):
             artists.append(artist["name"])
         
         self.current_vibe_name = track["name"]
-        self.current_vibe_url = track["external_urls"]["spotify"]
+        self.current_vibe_spot_url = track["external_urls"]["spotify"]
         self.current_vibe_artists = ", ".join(artists)
+        self.youtube_music_url()
+    
+    def youtube_music_url(self):
+        ytm_id = YouTubeMusicAPI.search(f"{self.current_vibe_name} by {self.current_vibe_artists}")["id"]
+        self.current_vibe_ytm_url = f"https://music.youtube.com/watch?v={ytm_id}"
     
     def vibe_message(self):
-        message = f'Vibe of the day\n[{self.current_vibe_name}]({self.current_vibe_url}) by {self.current_vibe_artists}'
+        message = dedent(f"""
+            Vibe of the day
+            {self.current_vibe_name} by {self.current_vibe_artists}
+            [Spotify]({self.current_vibe_spot_url}) - [YT Music]({self.current_vibe_ytm_url})
+            """)
         return message
     
     def cog_unload(self):
         self.background_task.cancel()
 
-    @tasks.loop(hours=1)
+    @tasks.loop(hours=1.0)
     async def background_task(self):    
-        now = datetime.datetime.now()
-        if 20 <= now.hour < 21:
+        now = datetime.now()
+        if 9 <= now.hour < 10:
             self.get_a_vibe()
             channel = self.bot.get_channel(self.VIBE_ANNOUNCEMENT_CHANNEL)
             channel.send(self.vibe_message())
