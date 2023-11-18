@@ -16,8 +16,11 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 @bot.event
 async def on_ready():
     print("Bot logged in")
-    
-cogignore = file = open("./.cogignore", "r").read().split("\n")
+
+try:
+    cogignore = file = open("./.cogignore", "r").read().split("\n")
+except FileNotFoundError:
+    cogignore = []
 
 def cog_ignored(cog):
     return cog in cogignore
