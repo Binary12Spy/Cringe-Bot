@@ -1,5 +1,4 @@
 import os
-import nextcord
 from nextcord.ext import tasks, commands
 from dotenv import load_dotenv
 
@@ -80,7 +79,7 @@ class VibeOfTheDay(commands.Cog):
         return message
     
     def youtube_music_url(self, song):
-        ytm_id = YouTubeMusicAPI.search(f"{song["name"]} by {song["artists"]}")["id"]
+        ytm_id = YouTubeMusicAPI.search(f'{song["name"]} by {song["artists"]}')["id"]
         return f"https://music.youtube.com/watch?v={ytm_id}"
     
     def get_a_vibe(self):
