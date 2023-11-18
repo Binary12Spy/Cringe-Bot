@@ -18,8 +18,10 @@ pip install -r requirements.txt
 ```
 ***or***
 ```
+git clone https://github.com/Binary12Spy/Cringe-Bot.git
+cd Cringe-Bot
 docker build -t cringe-bot .
-docker run --env-file .env cringe-bot
+docker run -d --name cringe-bot --env-file ./../.env cringe-bot
 ```
 
 ### Run
