@@ -3,7 +3,7 @@ from nextcord.ext import commands
 
 import uwuify
 
-class TextToys(commands.Cog):
+class texttoys(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
@@ -18,4 +18,4 @@ class TextToys(commands.Cog):
         await message.reply(response)
 
 def setup(bot):
-    bot.add_cog(TextToys(bot))
+    bot.add_cog(texttoys(bot))

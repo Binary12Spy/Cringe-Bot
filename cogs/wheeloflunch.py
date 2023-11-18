@@ -8,7 +8,7 @@ import requests
 from textwrap import dedent
 from urllib.parse import quote
 
-class WheelOfLunch(commands.Cog):
+class wheeloflunch(commands.Cog):
     
     #region Enviornment Variables
     load_dotenv()
@@ -49,7 +49,7 @@ class WheelOfLunch(commands.Cog):
             return f'Error: {response.status_code}'
     #endregion
         
-    @nextcord.slash_command(name="wheeloflunch")
+    @nextcord.slash_command(name="wheeloflunch", description="Spin the wheel of lunch!")
     async def wheel_of_lunch(self, ctx, zipcode: str):
         business = self.random_business(zipcode)
         message_string = dedent(f"""
@@ -61,4 +61,4 @@ class WheelOfLunch(commands.Cog):
         await ctx.send(message_string)
 
 def setup(bot):
-    bot.add_cog(WheelOfLunch(bot))
+    bot.add_cog(wheeloflunch(bot))

@@ -12,7 +12,7 @@ import random
 
 CACHE_DIR = "./cogs/.cache/vibeoftheday.cache"
 
-class VibeOfTheDay(commands.Cog):
+class vibeoftheday(commands.Cog):
     
     #region Enviornment Variables
     load_dotenv()
@@ -95,7 +95,8 @@ class VibeOfTheDay(commands.Cog):
     @tasks.loop(hours=1.0)
     async def background_task(self):    
         now = datetime.now()
-        if 6 <= now.hour < 7:
+        if 11 <= now.hour < 12:
+            print("vibeoftheday: It's 11 o'clock, time to vibe!")
             self.get_a_vibe()
             channel = self.bot.get_channel(int(self.VIBE_ANNOUNCEMENT_CHANNEL))
             await channel.send(self.vibe_message(), suppress_embeds=True)
@@ -106,4 +107,4 @@ class VibeOfTheDay(commands.Cog):
         self.background_task.start()
 
 def setup(bot):
-    bot.add_cog(VibeOfTheDay(bot))
+    bot.add_cog(vibeoftheday(bot))
