@@ -1,11 +1,11 @@
 # Cringe-Bot
 
 ### What it do
-Provide fun and entertainment for everyone...  
+Provide fun and entertainment for everyone...
 
-Uwuify mesages and text  
-Provide the *Vibe of the Day* from a Spotify playlist  
-Get suggestions on places to eat with the ***Wheel of Lunch***
+- Uwuify mesages and text  
+- Provide the *Vibe of the Day* from a Spotify playlist  
+- Get suggestions on places to eat with the ***Wheel of Lunch***
 
 ### Install
 
@@ -27,5 +27,3 @@ docker run --env-file .env cringe-bot
 ```
 python bot.py
 ```
-
-
