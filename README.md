@@ -1,10 +1,10 @@
 # Cringe-Bot
 
 ### What it do
-Provide fun and entertainment for everyone...
+Provide fun and entertainment for everyone...  
 
-Uwuify mesages and text
-Provide the *Vibe of the Day* from a Spotify playlist
+Uwuify mesages and text  
+Provide the *Vibe of the Day* from a Spotify playlist  
 Get suggestions on places to eat with the ***Wheel of Lunch***
 
 ### Install
