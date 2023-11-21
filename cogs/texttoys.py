@@ -1,9 +1,10 @@
+import datetime
 import nextcord
 from nextcord.ext import commands
 
 from uwuipy import uwuipy
 
-uwu = uwuipy(None, 0.2, 0.1, 0.1, 1, True)
+uwu = uwuipy(datetime(2017, 11, 28, 23, 55, 59, 342380).timestamp(), 0.2, 0.1, 0.1, 1, True)
 
 class texttoys(commands.Cog):
     def __init__(self, bot):
