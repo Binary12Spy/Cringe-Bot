@@ -78,7 +78,7 @@ class vibeoftheday(commands.Cog):
     def vibe_message(self):
         message = dedent(f"""
             ### Vibe of the day:
-            *{self.current_vibe["name"]}* by *{self.current_vibe["artists"]}*
+            ***{self.current_vibe["name"]}*** by ***{self.current_vibe["artists"]}***
             [Spotify]({self.current_vibe["urls"]["spotify"]}) - [YT Music]({self.current_vibe["urls"]["yt_music"]})
             """)
         return message
