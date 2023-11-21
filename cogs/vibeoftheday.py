@@ -10,7 +10,8 @@ from textwrap import dedent
 from datetime import datetime
 import random
 
-CACHE_DIR = "./cogs/.cache/vibeoftheday.cache"
+CACHE_DIR = "./cogs/.cache/"
+CACHE_FILE = "vibeoftheday.cache"
 
 class vibeoftheday(commands.Cog):
     
@@ -26,24 +27,28 @@ class vibeoftheday(commands.Cog):
     
     def __init__(self, bot):
         self.bot = bot
-        # Reate the cache file if it doesn't exist
-        if not os.path.exists(CACHE_DIR):
-            with open(CACHE_DIR, 'w') as file:
-                file.write('')
-        self.cache_file = open(CACHE_DIR, "r+")
+        self.cache_file = CACHE_DIR + CACHE_FILE
         self.load_from_cache()
         
     #region Cache Functions
     def load_from_cache(self):
-        string = self.cache_file.read()
-        if string == '':
-            self.current_vibe = {"name": "", "artists": "", "urls": {"spotify": "", "yt_music": ""}}
-            self.get_a_vibe()
-            return
-        self.current_vibe = json.loads(string)
+        # Create the cache file if it doesn't exist
+        if not os.path.exists(CACHE_DIR):
+            os.makedirs(CACHE_DIR)
+        if not os.path.exists(CACHE_DIR + CACHE_FILE):
+            open(CACHE_DIR + CACHE_FILE, "w+").close()
+        with open(self.cache_file, "r") as cache_file:
+            string = cache_file.read()
+            try:
+                self.current_vibe = json.loads(string)
+            except:
+                self.current_vibe = {"name": "", "artists": "", "urls": {"spotify": "", "yt_music": ""}}
+                self.get_a_vibe()
+                return
     
-    def save_to_cache(self, song):
-        self.cache_file.write(json.dumps(song))
+    def save_to_cache(self, song): 
+        with open(self.cache_file, "w") as cache_file:
+            cache_file.write(json.dumps(song))
     #endregion
     
     #region Helper Functions
@@ -85,14 +90,14 @@ class vibeoftheday(commands.Cog):
     def get_a_vibe(self):
         song = self.random_song(self.SPOTIFY_VIBE_PLAYLIST_ID)
         self.format_song(song)
-        self.save_to_cache(song)
+        self.save_to_cache(self.current_vibe)
     #endregion
     
     def cog_unload(self):
         self.cache_file.close()
         self.background_task.cancel()
 
-    @tasks.loop(hours=1.0)
+    @tasks.loop(seconds=3600)
     async def background_task(self):    
         now = datetime.now()
         if 6 <= now.hour < 7:
